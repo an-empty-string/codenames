@@ -2,6 +2,7 @@ from pyrcb2 import Event, IRCBot
 
 from .interface import Interface
 from .state import UNLIMITED, Game, GamePhase, InvalidGameState, Player, Team
+from .utils import plural
 
 PREFIX = "-"
 TEAM_MAP = {
@@ -198,7 +199,7 @@ class IRCInterface(Interface):
             n = len(self.game.players)
             players = ", ".join(self.format_player(p) for p in self.game.players)
 
-            self.tell(f"{n} players: {players}. The game hasn't started yet.")
+            self.tell(f"{plural(n, 'player', 'players')}: {players}. The game hasn't started yet.")
 
     @command({"w", "words"}, only_during_game=True)
     def command_words(self, actor, args):
