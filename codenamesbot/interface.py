@@ -25,14 +25,16 @@ class Interface():
         if team is None:
             self.tell(f"{self.format_player(player)} has joined the game.")
         else:
-            self.tell(f"{self.format_player(player)} has joined the {self.format_team(team)} team.")
+            self.tell(
+                f"{self.format_player(player)} has joined the {self.format_team(team)} team.")
 
     def player_leaves(self, player):
         self.tell(f"{self.format_player(player)} has left the game.")
 
     def player_team_moved(self, player, new_team):
-        self.tell(f"{self.format_player(player)}'s team preference was unavailable, so they have been moved to the "
-                  f"{self.format_team(new_team)} team.")
+        self.tell(
+            f"{self.format_player(player)}'s team preference was unavailable, so they have been moved to the "
+            f"{self.format_team(new_team)} team.")
 
     def assassin_guessed(self, actor, word):
         self.tell(f"{self.format_player(actor)} has revealed the assassin, {word}!")
@@ -42,7 +44,9 @@ class Interface():
 
     def team_guessed(self, actor, team, word):
         remaining = len(self.game.remaining_words[team])
-        self.tell(f"{self.format_player(actor)} has revealed a {self.format_team(team)} agent. {remaining} left.")
+        self.tell(
+            f"{self.format_player(actor)} has revealed a {self.format_team(team)} agent. {remaining} left."
+        )
 
         if team == self.game.active_team and self.game.remaining_guesses:
             if self.game.remaining_guesses is not UNLIMITED:
@@ -78,14 +82,16 @@ class Interface():
             team = self.game.teams[team]
             members = ", ".join([f"{self.format_player(team.spymaster)} (spymaster)"] +
                                 [self.format_player(p) for p in team.guessers])
-            self.tell(f"{self.format_team(team)}: {members}")
+            self.tell(f"{self.format_team(team.team)}: {members}")
 
         if self.game.teams[Team.GRAY].guessers:
             members = ", ".join(self.format_player(p) for p in self.game.teams[Team.GRAY])
             self.tell(f"{self.format_team(Team.GRAY)}: {members}")
 
     def notify_hinting(self, team, spymaster):
-        self.tell(f"{self.format_player(spymaster)}: You're up! It's {self.format_team(team)}'s turn to hint.")
+        self.tell(
+            f"{self.format_player(spymaster)}: You're up! It's {self.format_team(team)}'s turn to hint."
+        )
         self.tell_private(spymaster, self.spymaster_view())
 
     def notify_guessing(self, team, guessers):
@@ -94,10 +100,8 @@ class Interface():
         hint = self.game.current_hint
         number_str = "unlimited" if hint[1] is UNLIMITED else str(hint[1])
 
-        self.tell(
-            f"{joined}: You're up! It's {self.format_team(team)}'s turn to guess. "
-            f"The clue is {hint[0]} ({number_str})."
-        )
+        self.tell(f"{joined}: You're up! It's {self.format_team(team)}'s turn to guess. "
+                  f"The clue is {hint[0]} ({number_str}).")
 
         words_left = ", ".join(self.game.all_words)
         self.tell(f"Here are the remaining words: {words_left}.")

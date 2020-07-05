@@ -1,7 +1,7 @@
 from pyrcb2 import Event, IRCBot
 
 from .interface import Interface
-from .state import UNLIMITED, Game, GamePhase, InvalidGameState, Team, Player
+from .state import UNLIMITED, Game, GamePhase, InvalidGameState, Player, Team
 
 PREFIX = "-"
 TEAM_MAP = {
@@ -132,7 +132,9 @@ class IRCInterface(Interface):
 
         actor.team = team_pref
         if team_pref is not None:
-            self.tell(f"{self.format_player(actor)} wants to be on the {self.format_team(team_pref)} team.")
+            self.tell(
+                f"{self.format_player(actor)} wants to be on the {self.format_team(team_pref)} team."
+            )
         else:
             self.tell(f"{self.format_player(actor)} has no team preference.")
 
@@ -206,7 +208,9 @@ class IRCInterface(Interface):
         pinks = ", ".join(self.game.guessed_words[Team.PINK])
         civilians = ", ".join(self.game.guessed_words[Team.GRAY])
 
-        self.tell(f"{B}{GRN}Green{N}: {greens} | {B}{PNK}Pink{N}: {pinks} | {B}Civilians{N}: {civilians}")
+        self.tell(
+            f"{B}{GRN}Green{N}: {greens} | {B}{PNK}Pink{N}: {pinks} | {B}Civilians{N}: {civilians}"
+        )
         self.tell(f"Remaining words: {remaining}.")
 
         if actor in {self.game.teams[Team.GREEN].spymaster, self.game.teams[Team.PINK].spymaster}:
@@ -220,11 +224,7 @@ class IRCInterface(Interface):
         if not isinstance(player, Player) or self.game.phase == GamePhase.PRE_GAME:
             return f"{B}{player}{N}"
 
-        color = {
-            Team.GREEN: GRN,
-            Team.PINK: PNK,
-            Team.GRAY: ""
-        }[player.team]
+        color = {Team.GREEN: GRN, Team.PINK: PNK, Team.GRAY: ""}[player.team]
 
         return f"{B}{color}{player}{N}"
 
