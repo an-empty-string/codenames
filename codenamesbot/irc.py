@@ -14,6 +14,11 @@ TEAM_MAP = {
     "none": None
 }
 
+B = "\x02"
+N = "\x0f"
+GRN = "\x0303"
+PNK = "\x0313"
+
 
 def command(names, only_during_game=False, only_for_joined=False):
 
@@ -201,7 +206,7 @@ class IRCInterface(Interface):
         pinks = ", ".join(self.game.guessed_words[Team.PINK])
         civilians = ", ".join(self.game.guessed_words[Team.GRAY])
 
-        self.tell(f"Green: {greens} | Pink: {pinks} | Civilians: {civilians}")
+        self.tell(f"{B}{GRN}Green{N}: {greens} | {B}{PNK}Pink{N}: {pinks} | {B}Civilians{N}: {civilians}")
         self.tell(f"Remaining words: {remaining}.")
 
         if actor in {self.game.teams[Team.GREEN].spymaster, self.game.teams[Team.PINK].spymaster}:
@@ -210,6 +215,13 @@ class IRCInterface(Interface):
     def notify_winner(self):
         super().notify_winner()
         self.game = Game(interface=self)
+
+    def format_team(self, team):
+        return {
+            Team.GREEN: f"{B}{GRN}Green{N}",
+            Team.PINK: f"{B}{GRN}Pink{N}",
+            Team.GRAY: f"{B}Gray{N}",
+        }[team]
 
     def tell(self, message):
         self.bot.privmsg(self.channel, message)

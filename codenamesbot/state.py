@@ -91,7 +91,7 @@ class Team(enum.Enum):
     GRAY = 3
 
     def __str__(self):
-        return self.name.lower()
+        return self.name.title()
 
     def __invert__(self):
         return {Team.GREEN: Team.PINK, Team.PINK: Team.GREEN, Team.GRAY: Team.GRAY}[self]
