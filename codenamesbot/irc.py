@@ -132,7 +132,7 @@ class IRCInterface(Interface):
 
         actor.team = team_pref
         if team_pref is not None:
-            self.tell(f"{actor} wants to be on the {team_pref} team.")
+            self.tell(f"{actor} wants to be on the {self.interface.format_team(team_pref)} team.")
         else:
             self.tell(f"{actor} has no team preference.")
 
