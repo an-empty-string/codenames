@@ -77,6 +77,8 @@ class Interface():
         self.tell(f"{players}: Welcome to an exciting game of Codenames.")
         self.notify_teams()
 
+        self.tell_private(self.game.teams[Team.PINK].spymaster, self.spymaster_view())
+
     def notify_teams(self):
         for team in [Team.GREEN, Team.PINK]:
             team = self.game.teams[team]
