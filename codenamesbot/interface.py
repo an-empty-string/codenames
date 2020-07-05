@@ -18,28 +18,31 @@ class Interface():
     def format_team(self, team):
         return str(team)
 
+    def format_player(self, player):
+        return str(player)
+
     def player_joins(self, player, team=None):
         if team is None:
-            self.tell(f"{player} has joined the game.")
+            self.tell(f"{self.format_player(player)} has joined the game.")
         else:
-            self.tell(f"{player} has joined the {self.format_team(team)} team.")
+            self.tell(f"{self.format_player(player)} has joined the {self.format_team(team)} team.")
 
     def player_leaves(self, player):
-        self.tell(f"{player} has left the game.")
+        self.tell(f"{self.format_player(player)} has left the game.")
 
     def player_team_moved(self, player, new_team):
-        self.tell(f"{player}'s team preference was unavailable, so they have been moved to the "
+        self.tell(f"{self.format_player(player)}'s team preference was unavailable, so they have been moved to the "
                   f"{self.format_team(new_team)} team.")
 
     def assassin_guessed(self, actor, word):
-        self.tell(f"{actor} has revealed the assassin, {word}!")
+        self.tell(f"{self.format_player(actor)} has revealed the assassin, {word}!")
 
     def civilian_guessed(self, actor, word):
-        self.tell(f"{actor} has revealed a civilian ({word}).")
+        self.tell(f"{self.format_player(actor)} has revealed a civilian ({word}).")
 
     def team_guessed(self, actor, team, word):
         remaining = len(self.game.remaining_words[team])
-        self.tell(f"{actor} has revealed a {self.format_team(team)} agent. {remaining} left.")
+        self.tell(f"{self.format_player(actor)} has revealed a {self.format_team(team)} agent. {remaining} left.")
 
         if team == self.game.active_team and self.game.remaining_guesses:
             if self.game.remaining_guesses is not UNLIMITED:
@@ -66,27 +69,27 @@ class Interface():
                 f"{self.format_team(Team.PINK)}: {pinks} | Civilians: {civilians}")
 
     def notify_start(self):
-        players = ", ".join(p.name for p in self.game.players)
+        players = ", ".join(self.format_player(p) for p in self.game.players)
         self.tell(f"{players}: Welcome to an exciting game of Codenames.")
         self.notify_teams()
 
     def notify_teams(self):
         for team in [Team.GREEN, Team.PINK]:
             team = self.game.teams[team]
-            members = ", ".join([f"{team.spymaster} (spymaster)"] +
-                                [p.name for p in team.guessers])
+            members = ", ".join([f"{self.format_player(team.spymaster)} (spymaster)"] +
+                                [self.format_player(p) for p in team.guessers])
             self.tell(f"{self.format_team(team)}: {members}")
 
         if self.game.teams[Team.GRAY].guessers:
-            members = ", ".join(p.name for p in self.game.teams[Team.GRAY])
+            members = ", ".join(self.format_player(p) for p in self.game.teams[Team.GRAY])
             self.tell(f"{self.format_team(Team.GRAY)}: {members}")
 
     def notify_hinting(self, team, spymaster):
-        self.tell(f"{spymaster}: You're up! It's {self.format_team(team)}'s turn to hint.")
+        self.tell(f"{self.format_player(spymaster)}: You're up! It's {self.format_team(team)}'s turn to hint.")
         self.tell_private(spymaster, self.spymaster_view())
 
     def notify_guessing(self, team, guessers):
-        joined = ", ".join(g.name for g in guessers)
+        joined = ", ".join(self.format_player(g) for g in guessers)
 
         hint = self.game.current_hint
         number_str = "unlimited" if hint[1] is UNLIMITED else str(hint[1])

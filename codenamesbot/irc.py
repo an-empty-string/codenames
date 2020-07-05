@@ -1,7 +1,7 @@
 from pyrcb2 import Event, IRCBot
 
 from .interface import Interface
-from .state import UNLIMITED, Game, GamePhase, InvalidGameState, Team
+from .state import UNLIMITED, Game, GamePhase, InvalidGameState, Team, Player
 
 PREFIX = "-"
 TEAM_MAP = {
@@ -132,9 +132,9 @@ class IRCInterface(Interface):
 
         actor.team = team_pref
         if team_pref is not None:
-            self.tell(f"{actor} wants to be on the {self.format_team(team_pref)} team.")
+            self.tell(f"{self.format_player(actor)} wants to be on the {self.format_team(team_pref)} team.")
         else:
-            self.tell(f"{actor} has no team preference.")
+            self.tell(f"{self.format_player(actor)} has no team preference.")
 
     @command({"spymaster"}, only_for_joined=True)
     def command_spymaster_pref(self, actor, args):
@@ -144,7 +144,7 @@ class IRCInterface(Interface):
         actor.toggle_spymaster_preference()
         pref = "wants" if actor.spymaster_preference else "does not want"
 
-        self.tell(f"{actor} {pref} to be a spymaster.")
+        self.tell(f"{self.format_player(actor)} {pref} to be a spymaster.")
 
     @command({"start"})
     def command_start(self, actor, args):
@@ -152,7 +152,7 @@ class IRCInterface(Interface):
 
     @command({"endgame"})
     def command_force_endgame(self, actor, args):
-        self.tell(f"{actor} is forcing the game to end immediately.")
+        self.tell(f"{self.format_player(actor)} is forcing the game to end immediately.")
         self.tell(self.full_words_view())
         self.game = Game(interface=self)
 
@@ -194,7 +194,7 @@ class IRCInterface(Interface):
 
         elif self.game.phase == GamePhase.PRE_GAME:
             n = len(self.game.players)
-            players = ", ".join(p.name for p in self.game.players)
+            players = ", ".join(self.format_player(p) for p in self.game.players)
 
             self.tell(f"{n} players: {players}. The game hasn't started yet.")
 
@@ -215,6 +215,18 @@ class IRCInterface(Interface):
     def notify_winner(self):
         super().notify_winner()
         self.game = Game(interface=self)
+
+    def format_player(self, player):
+        if not isinstance(player, Player) or self.game.phase == GamePhase.PRE_GAME:
+            return f"{B}{player}{N}"
+
+        color = {
+            Team.GREEN: GRN,
+            Team.PINK: PNK,
+            Team.GRAY: ""
+        }[player.team]
+
+        return f"{B}{color}{player}{N}"
 
     def format_team(self, team):
         return {
