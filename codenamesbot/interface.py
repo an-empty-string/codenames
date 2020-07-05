@@ -50,7 +50,7 @@ class Interface():
 
         if team == self.game.active_team and self.game.remaining_guesses:
             if self.game.remaining_guesses is not UNLIMITED:
-                self.tell(f"The {self.format_team(team)} team has {self.game.remaining_guesses} "
+                self.tell(f"The {self.format_team(team)} team has "
                           f"{plural(self.game.remaining_guesses, 'guess', 'guesses')} left.")
 
             else:

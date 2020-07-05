@@ -228,7 +228,7 @@ class IRCInterface(Interface):
         if not isinstance(player, Player) or self.game.phase == GamePhase.PRE_GAME:
             return f"{B}{player}{N}"
 
-        color = {Team.GREEN: GRN, Team.PINK: PNK, Team.GRAY: ""}[player.team]
+        color = {Team.GREEN: GRN, Team.PINK: PNK, Team.GRAY: "", None: ""}[player.team]
 
         return f"{B}{color}{player}{N}"
 
