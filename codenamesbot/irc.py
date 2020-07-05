@@ -195,11 +195,14 @@ class IRCInterface(Interface):
 
             self.tell(f"It's {self.game.active_team}'s turn to {action}.")
 
-        elif self.game.phase == GamePhase.PRE_GAME:
+        elif self.game.phase == GamePhase.PRE_GAME and self.game.players:
             n = len(self.game.players)
             players = ", ".join(self.format_player(p) for p in self.game.players)
 
             self.tell(f"{plural(n, 'player', 'players')}: {players}. The game hasn't started yet.")
+
+        else:
+            self.tell("No players yet.")
 
     @command({"w", "words"}, only_during_game=True)
     def command_words(self, actor, args):
