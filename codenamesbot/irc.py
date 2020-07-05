@@ -219,7 +219,7 @@ class IRCInterface(Interface):
     def format_team(self, team):
         return {
             Team.GREEN: f"{B}{GRN}Green{N}",
-            Team.PINK: f"{B}{GRN}Pink{N}",
+            Team.PINK: f"{B}{PNK}Pink{N}",
             Team.GRAY: f"{B}Gray{N}",
         }[team]
 
