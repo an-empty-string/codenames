@@ -1,6 +1,7 @@
 import logging
 
 from .state import UNLIMITED, Team
+from .utils import plural
 
 
 class Interface():
@@ -39,7 +40,8 @@ class Interface():
 
         if team == self.game.active_team and self.game.remaining_guesses:
             if self.game.remaining_guesses is not UNLIMITED:
-                self.tell(f"The {team} team has {self.game.remaining_guesses} guesses left.")
+                self.tell(f"The {team} team has {self.game.remaining_guesses} "
+                          f"{plural(self.game.remaining_guesses, 'guess', 'guesses')} left.")
 
             else:
                 self.tell(f"The {team} team has unlimited guesses left.")
