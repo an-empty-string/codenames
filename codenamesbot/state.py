@@ -260,9 +260,14 @@ class Game:
                     player.team = team
 
     def _assign_teams_gray(self, players):
-        # find the first green and pink player
+        # find the first green and pink player. sort gray players at the back
         green = None
         pink = None
+
+        for player in players[::]:
+            if player.team == Team.GRAY:
+                players.remove(player)
+                players.append(player)
 
         for player in players[::]:
             if player.team == Team.GREEN and green is None:

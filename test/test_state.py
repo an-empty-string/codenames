@@ -228,6 +228,24 @@ def test_assign_players_gray_spymaster_preference():
         assert {game.teams[Team.GREEN].spymaster, game.teams[Team.PINK].spymaster} == {alice, eve}
 
 
+def test_assign_players_gray_for_gray_preference():
+    for _ in range(100):
+        game = Game()
+
+        tris = game.join("tris")
+        claire = game.join("claire")
+        bob = game.join("bob")
+        alice = game.join("alice")
+
+        bob.team = Team.GRAY
+        alice.team = Team.GRAY
+
+        game.mode = GameMode.GRAY
+        game.assign_teams()
+
+        assert {game.teams[Team.GREEN].spymaster, game.teams[Team.PINK].spymaster} == {tris, claire}
+
+
 def test_assign_players_versus_all_team_preference():
     for _ in range(100):
         game = Game()
