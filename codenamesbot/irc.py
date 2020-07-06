@@ -7,6 +7,7 @@ from .utils import plural
 import random
 
 PREFIX = "-"
+MISSING = object()
 TEAM_MAP = {
     "g": Team.GREEN,
     "green": Team.GREEN,
@@ -139,8 +140,8 @@ class IRCInterface(Interface):
         if self.game.phase is not GamePhase.PRE_GAME:
             raise InvalidGameState("You can only specify a team preference before the game.")
 
-        team_pref = TEAM_MAP.get(args[0].lower())
-        if not team_pref:
+        team_pref = TEAM_MAP.get(args[0].lower(), MISSING)
+        if team_pref is MISSING:
             raise InvalidGameState("Invalid team preference.")
 
         actor.team = team_pref
