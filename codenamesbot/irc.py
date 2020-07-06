@@ -1,8 +1,10 @@
 from pyrcb2 import Event, IRCBot
 
 from .interface import Interface
-from .state import UNLIMITED, Game, GamePhase, InvalidGameState, Player, Team
+from .state import UNLIMITED, Game, GameMode, GamePhase, InvalidGameState, Player, Team
 from .utils import plural
+
+import random
 
 PREFIX = "-"
 TEAM_MAP = {
@@ -12,7 +14,17 @@ TEAM_MAP = {
     "pink": Team.PINK,
     "gray": Team.GRAY,
     "grey": Team.GRAY,
-    "none": None
+    "none": None,
+}
+
+MODE_MAP = {
+    "normal": GameMode.VERSUS,
+    "versus": GameMode.VERSUS,
+    "vs": GameMode.VERSUS,
+    "three": GameMode.GRAY,
+    "3": GameMode.GRAY,
+    "gray": GameMode.GRAY,
+    "grey": GameMode.GRAY,
 }
 
 B = "\x02"
@@ -139,6 +151,21 @@ class IRCInterface(Interface):
         else:
             self.tell(f"{self.format_player(actor)} has no team preference.")
 
+    @command({"gamemode", "mode", "game"}, only_for_joined=True)
+    def command_gamemode(self, actor, args):
+        if not args:
+            raise InvalidGameState("You need to specify a game mode.")
+
+        mode = MODE_MAP.get(args[0].lower())
+        if mode is None:
+            raise InvalidGameState("You need to specify a game mode that exists.")
+
+        if self.game.phase is not GamePhase.PRE_GAME:
+            raise InvalidGameState("You can only specify a game mode before the game.")
+
+        self.game.mode = mode
+        self.tell(f"{self.format_player(actor)} has set the game mode to {B}{mode}{N}")
+
     @command({"spymaster"}, only_for_joined=True)
     def command_spymaster_pref(self, actor, args):
         if self.game.phase is not GamePhase.PRE_GAME:
@@ -219,6 +246,15 @@ class IRCInterface(Interface):
 
         if actor in {self.game.teams[Team.GREEN].spymaster, self.game.teams[Team.PINK].spymaster}:
             self.tell_private(actor, self.spymaster_view())
+
+    @command({"pony"})
+    def command_pony(self, actor, args):
+        self.tell(f"{B}{actor}{N} flips a pony into the air...")
+
+        v = random.random()
+        result = "head" if v < 0.3 else "tail" if v < 0.9 else "side"
+
+        self.tell(f"The pony lands on its {B}{result}{N}.")
 
     def notify_winner(self):
         super().notify_winner()
