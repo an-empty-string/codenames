@@ -213,7 +213,7 @@ class IRCInterface(Interface):
     def command_stop(self, actor, args):
         self.game.stop(actor)
 
-    @command({"stats", "status"})
+    @command({"stats", "status", "players"})
     def command_stats(self, actor, args):
         if self.game.phase in {GamePhase.GUESSING, GamePhase.HINTING}:
             self.notify_teams()
