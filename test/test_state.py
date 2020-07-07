@@ -752,6 +752,30 @@ def test_winning_during_guessing_phase():
     assert game.winner == Team.PINK
 
 
+def test_winning_during_guessing_phase_with_0_guesses_remaining():
+    game, tris = setup_4p_game()
+    game.hint(tris, "pony", UNLIMITED)
+
+    game.stop(game.players["claire"])
+    game.hint(game.players["bob"], "pony", 7)
+
+    for word in game.words[Team.PINK][:-2]:
+        game.guess(game.players["alice"], word)
+
+    game.stop(game.players["alice"])
+    game.hint(tris, "pony", 1)
+
+    game.guess(game.players["claire"], game.words[Team.GRAY][0])
+
+    game.hint(game.players["bob"], "pony", 1)
+
+    game.guess(game.players["alice"], game.remaining_words[Team.PINK][0])
+    game.guess(game.players["alice"], game.remaining_words[Team.PINK][0])
+
+    assert game.phase == GamePhase.POST_GAME
+    assert game.winner == Team.PINK
+
+
 def test_leave_during_game():
     game, tris = setup_4p_game()
 

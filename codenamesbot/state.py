@@ -429,9 +429,8 @@ class Game:
                 self.remaining_guesses -= 1
 
             self.interface.team_guessed(actor, self.active_team, word)
-            self.check_win()
 
-            if self.remaining_guesses == 0:
+            if not self.check_win() and self.remaining_guesses == 0:
                 self.end_guessing()
 
     def stop(self, actor):
