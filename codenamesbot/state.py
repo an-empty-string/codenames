@@ -445,10 +445,10 @@ class Game:
         self.end_guessing()
 
     def end_guessing(self):
-        assert self.phase == GamePhase.GUESSING
-
         if self.check_win():
             return
+
+        assert self.phase == GamePhase.GUESSING
 
         self.phase = GamePhase.HINTING
         self.active_team = ~self.active_team
